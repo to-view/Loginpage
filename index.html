@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ami dusto</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e1e1e, #121212);
+            color: white;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .login-container {
+            background-color: rgba(30, 30, 30, 0.9);
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            position: relative;
+            transform: rotateY(10deg);
+            transform-style: preserve-3d;
+        }
+
+        .login-container h2 {
+            margin-bottom: 1em;
+            color: #ff00ff;
+            transform: translateZ(50px);
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: 100%;
+            padding: 1em;
+            margin-bottom: 1em;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            transform: translateZ(30px);
+        }
+
+        .login-container input[type="text"]::placeholder,
+        .login-container input[type="password"]::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .login-container button {
+            padding: 1em 2em;
+            border: none;
+            border-radius: 5px;
+            background: linear-gradient(135deg, #ff00ff, #00ffff);
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) translateZ(50px);
+            transition: all 0.3s ease;
+        }
+
+        .login-container button:hover {
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+        }
+
+        .background-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10vw;
+            color: rgba(255, 255, 255, 0.1);
+            pointer-events: none;
+            user-select: none;
+            z-index: -1;
+        }
+
+        .rain {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .drop {
+            position: absolute;
+            bottom: 100%;
+            width: 1px;
+            height: 100px;
+            pointer-events: none;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
+            animation: fall linear infinite;
+        }
+
+        .splash {
+            position: absolute;
+            bottom: 0;
+            width: 10px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0);
+            animation: splash 0.5s ease-out infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        @keyframes splash {
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .fog {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.0));
+            animation: fog 20s linear infinite;
+            pointer-events: none;
+            opacity: 0.2;
+        }
+
+        @keyframes fog {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(0, 0) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .message {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: translateY(-100%);
+            padding: 1em;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            color: #ff00ff;
+            font-size: 1em;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="rain"></div>
+    <div class="fog"></div>
+    <div class="background-text">parliament</div>
+    <div class="login-container">
+        <h2>parli's project</h2>
+        <input type="text" placeholder="username den sir" id="username">
+        <input type="password" placeholder="password den vai" id="password">
+        <button id="loginBtn">login</button>
+        <div class="message" id="message">don't touch my body 🙂</div>
+    </div>
+
+    <script>
+        const loginBtn = document.getElementById('loginBtn');
+        const message = document.getElementById('message');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+
+        function moveButton() {
+            const container = loginBtn.parentElement;
+            const containerWidth = container.offsetWidth;
+            const containerHeight = container.offsetHeight;
+            const newLeft = Math.random() * (containerWidth - loginBtn.offsetWidth);
+            const newTop = Math.random() * (containerHeight - loginBtn.offsetHeight);
+
+            loginBtn.style.left = `${newLeft}px`;
+            loginBtn.style.top = `${newTop}px`;
+        }
+
+        usernameInput.addEventListener('mouseover', moveButton);
+        passwordInput.addEventListener('mouseover', moveButton);
+        loginBtn.addEventListener('mouseover', moveButton);
+        loginBtn.addEventListener('click', () => {
+            moveButton();
+            showMessage();
+        });
+
+        function showMessage() {
+            message.style.opacity = '1';
+            message.style.transform = 'translateY(0)';
+            setTimeout(() => {
+                message.style.opacity = '0';
+                message.style.transform = 'translateY(-100%)';
+            }, 2000);
+        }
+
+        function createRain() {
+            const rainContainer = document.querySelector('.rain');
+
+            for (let i = 0; i < 100; i++) {
+                const drop = document.createElement('div');
+                drop.classList.add('drop');
+                drop.style.left = `${Math.random() * 100}vw`;
+                drop.style.animationDuration = `${Math.random() * 2 + 1}s`;
+
+                const splash = document.createElement('div');
+                splash.classList.add('splash');
+                splash.style.left = `${Math.random() * 100}vw`;
+                splash.style.animationDuration = `${Math.random() * 2 + 1}s`;
+
+                rainContainer.appendChild(drop);
+                rainContainer.appendChild(splash);
+            }
+        }
+
+        createRain();
+    </script>
+</body>
+</html>
